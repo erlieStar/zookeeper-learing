@@ -1,0 +1,3 @@
+# zookeeper学习笔记
+javaapi包为zookeeper原生api
+curator为apache curator为zookeeper封装的api
