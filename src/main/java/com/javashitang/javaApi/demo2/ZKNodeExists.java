@@ -1,4 +1,4 @@
-package com.javashitang.demo2;
+package com.javashitang.javaApi.demo2;
 
 import lombok.Data;
 import org.apache.zookeeper.WatchedEvent;
@@ -10,22 +10,22 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 /*
- * 节点基本操作
+ * 节点是否存在
  */
 @Data
-public class ZKNodeOperator implements Watcher {
+public class ZKNodeExists implements Watcher {
 
     private ZooKeeper zooKeeper = null;
     public static final String zkServerPath = "www.erlie.cc:2181";
     public static final Integer timeout = 5000;
     private static CountDownLatch countDown = new CountDownLatch(1);
 
-    public ZKNodeOperator() { }
+    public ZKNodeExists() { }
 
-    public ZKNodeOperator(String connectString) {
+    public ZKNodeExists(String connectString) {
 
         try {
-            zooKeeper = new ZooKeeper(zkServerPath, timeout, new ZKNodeOperator());
+            zooKeeper = new ZooKeeper(zkServerPath, timeout, new ZKNodeExists());
         } catch (IOException e) {
             e.printStackTrace();
             if (zooKeeper != null) {
@@ -39,7 +39,7 @@ public class ZKNodeOperator implements Watcher {
     }
 
     public static void main(String[] args) throws Exception {
-        ZKNodeOperator zkServer = new ZKNodeOperator(zkServerPath);
+        ZKNodeExists zkServer = new ZKNodeExists(zkServerPath);
         Stat stat = zkServer.getZooKeeper().exists("/imooc-test", true);
         if (stat != null) {
             System.out.println(stat.getVersion());
