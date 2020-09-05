@@ -1,4 +1,4 @@
-package com.st.javaapi.demo1;
+package com.javashitang.demo1;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.*;

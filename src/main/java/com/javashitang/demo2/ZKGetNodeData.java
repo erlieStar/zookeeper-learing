@@ -1,4 +1,4 @@
-package com.st.javaapi.demo2;
+package com.javashitang.demo2;
 
 import lombok.Data;
 import org.apache.zookeeper.WatchedEvent;
