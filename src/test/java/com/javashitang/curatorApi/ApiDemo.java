@@ -66,7 +66,7 @@ public class ApiDemo {
      *
      */
     @Test
-    public void watcher() {
+    public void watcher() throws Exception {
         // cacheData 为 true，接收到列表变更事件的同时，也会获得节点内容
         PathChildrenCache cache = new PathChildrenCache(client, "watcher", true);
         PathChildrenCacheListener listener = ((CuratorFramework client, PathChildrenCacheEvent event) -> {
@@ -82,5 +82,7 @@ public class ApiDemo {
                     break;
             }
         });
+        cache.getListenable().addListener(listener);
+        cache.start();
     }
 }
