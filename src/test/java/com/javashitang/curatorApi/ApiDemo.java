@@ -26,8 +26,8 @@ public class ApiDemo {
      */
     @Test
     @Before
-    public void test1() {
-        String connectString = "";
+    public void connect() {
+        String connectString = "myhost:2181";
         // 重试3次，每次间隔1000ms
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.newClient(connectString, retryPolicy);
@@ -36,7 +36,7 @@ public class ApiDemo {
     @Test
     public void create() throws Exception {
         // 创建一个内容为空的节点
-        client.create().forPath("/nocontent");
+        client.create().forPath("/noContent");
         // 创建包含内容的节点
         client.create().forPath("/content", "我是内容".getBytes());
         // 创建临时节点，并递归创建父节点，在递归创建父节点时，父节点为持久节点
@@ -44,18 +44,18 @@ public class ApiDemo {
     }
 
     @Test
-    public void get() throws Exception {
-        client.getData().forPath("/nocontent");
+    public void getData() throws Exception {
+        client.getData().forPath("/noContent");
     }
 
     @Test
-    public void update() throws Exception {
+    public void setData() throws Exception {
         client.setData().forPath("/content", "新内容".getBytes());
     }
 
     @Test
     public void delete() throws Exception {
-        client.delete().forPath("/nocontent");
+        client.delete().forPath("/noContent");
         // 递归删除子节点
         client.delete().deletingChildrenIfNeeded().forPath("/curator/content");
     }
