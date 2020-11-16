@@ -1,8 +1,6 @@
 package com.javashitang.zookeeperApi;
 
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,8 +47,9 @@ public class ApiDemo {
     }
 
     @Test
-    public void create() {
-        zooKeeper.create();
+    public void create() throws Exception {
+        // 创建临时节点
+        zooKeeper.create("/java", "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
     }
 
     @Test
@@ -62,11 +61,11 @@ public class ApiDemo {
 
     @Test
     public void setData() {
-        zooKeeper.setData()
+//        zooKeeper.setData();
     }
 
     @Test
     public void delete() {
-        zooKeeper.delete();
+//        zooKeeper.delete();
     }
 }

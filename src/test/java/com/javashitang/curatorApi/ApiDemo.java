@@ -3,10 +3,7 @@ package com.javashitang.curatorApi;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
+import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.junit.Before;
@@ -31,6 +28,7 @@ public class ApiDemo {
         // 重试3次，每次间隔1000ms
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.newClient(connectString, retryPolicy);
+        client.start();
     }
 
     @Test
@@ -60,13 +58,16 @@ public class ApiDemo {
         client.delete().deletingChildrenIfNeeded().forPath("/curator/content");
     }
 
+    @Test
+    public void nodeCacheListener() throws Exception {
+    }
+
     /**
      * 事件监听
      * https://www.cnblogs.com/crazymakercircle/p/10228385.html
-     *
      */
     @Test
-    public void watcher() throws Exception {
+    public void pathChildrenCacheListener() throws Exception {
         // cacheData 为 true，接收到列表变更事件的同时，也会获得节点内容
         PathChildrenCache cache = new PathChildrenCache(client, "watcher", true);
         PathChildrenCacheListener listener = ((CuratorFramework client, PathChildrenCacheEvent event) -> {
