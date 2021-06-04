@@ -5,6 +5,9 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.CuratorWatcher;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -209,5 +212,44 @@ public class ApiDemo {
         client.delete().forPath(bossPath);
 
         TimeUnit.SECONDS.sleep(3);
+    }
+
+    @Test
+    public void testPathCache() throws Exception {
+
+        String bossPath = "/pathCache";
+        String workerPath = "/pathCache/id-";
+
+        if (client.checkExists().forPath(bossPath) == null) {
+            client.create().forPath(bossPath);
+        }
+
+        PathChildrenCache cache = new PathChildrenCache(client, bossPath, true);
+        PathChildrenCacheListener listener = ((CuratorFramework client, PathChildrenCacheEvent event) -> {
+            String changePath = event.getData().getPath();
+            changePath = changePath.substring(changePath.lastIndexOf("/") + 1);
+            log.info("changePath: {}", changePath);
+            switch (event.getType()) {
+                case CHILD_ADDED:
+                case CHILD_UPDATED:
+                    log.info("child add or update");
+                    break;
+                case CHILD_REMOVED:
+                    log.info("child removed");
+                    break;
+                default:
+                    break;
+            }
+            log.info("事件类型为: {}, 路径为: {}", event.getType(), changePath);
+        });
+
+        cache.getListenable().addListener(listener);
+        cache.start();
+
+        for (int i = 0; i < 3; i++) {
+            client.create().withMode(CreateMode.EPHEMERAL).forPath(workerPath + i, String.valueOf(i).getBytes());
+        }
+
+        TimeUnit.SECONDS.sleep(2);
     }
 }
